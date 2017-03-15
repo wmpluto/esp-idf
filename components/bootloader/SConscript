@@ -1,0 +1,57 @@
+import os
+from building import *
+Import('BUILD_DIR_BASE')
+Import('IDF_PATH')
+Import('Env')
+Import('IDF_VER')
+
+cwd = GetCurrentDir()
+name = os.path.split(cwd)[-1]
+
+src = Glob('*.c')
+
+
+
+env_boot = Env.Clone()
+
+CPPFLAGS  = ' -DWITH_POSIX -DHAVE_CONFIG_H'
+CPPFLAGS += ' -D BOOTLOADER_BUILD=1 -D IS_BOOTLOADER_BUILD=1'
+CPPFLAGS += ' -DESP_PLATFORM -D IDF_VER=\\"%s\\"' % IDF_VER
+CPPFLAGS += ' -DNDEBUG'
+
+COMPONENTS = ['bootloader_support', 'log', 'spi_flash', 'micro-ecc', 'esp32']
+COMPONENTS_DIRS = {component:('%s/components/%s'%(IDF_PATH,component)) for component in COMPONENTS}
+
+CPPPATH =  [cwd+'/src/main']
+CPPPATH += ['%s/include'%BUILD_DIR_BASE]
+CPPPATH += ['%s/include'%COMPONENTS_DIRS['bootloader_support']]
+CPPPATH += ['%s/include_priv'%COMPONENTS_DIRS['bootloader_support']]
+CPPPATH += ['%s/include'%COMPONENTS_DIRS['log']]
+CPPPATH += ['%s/include'%COMPONENTS_DIRS['spi_flash']]
+CPPPATH += ['%s/micro-ecc'%COMPONENTS_DIRS['micro-ecc']]
+CPPPATH += ['%s/include'%COMPONENTS_DIRS['esp32']]
+CPPPATH += ['%s/'%COMPONENTS_DIRS['esp32']]
+
+src = Glob('src/main/*.c')
+src += Glob('%s/src/*.c'%COMPONENTS_DIRS['bootloader_support'])
+src += Glob('%s/*.c'%COMPONENTS_DIRS['log'])
+src += Glob('%s/spi_flash_rom_patch.c'%COMPONENTS_DIRS['spi_flash'])
+src += Glob('%s/micro-ecc/uECC.c'%COMPONENTS_DIRS['micro-ecc'])
+
+LDFLAGS = ' -nostdlib -u call_user_start_cpu0'
+LDFLAGS += ' -Wl,--gc-sections -Wl,-static -Wl,--start-group'
+LDFLAGS += ' -T %s' % (cwd + '/src/main/esp32.bootloader.ld')
+LDFLAGS += ' -T %s' % (cwd + '/src/main/esp32.bootloader.rom.ld ')
+LDFLAGS += ' -T %s' % (IDF_PATH + '/components/esp32/ld/esp32.rom.ld')
+LDFLAGS += ' -T %s' % (IDF_PATH + '/components/esp32/ld/esp32.peripherals.ld')
+
+LIBS = ['rtc_clk', 'rtc', 'gcc', 'stdc++']
+LIBPATH = [IDF_PATH + '/components/esp32/lib'] 
+
+LINKCOM = '$LINK -o $TARGET $LINKFLAGS $__RPATH  $SOURCES $_LIBDIRFLAGS $_LIBFLAGS -Wl,--end-group -Wl,-EL -Wl,-Map=build/bootloader.map'
+elf = env_boot.Program(BUILD_DIR_BASE + '/bootloader.elf', src, 
+			CFLAGS=CPPFLAGS,CPPPATH=CPPPATH,LINKFLAGS = LDFLAGS, LINKCOM = LINKCOM,LIBS=LIBS,LIBPATH=LIBPATH)
+env_boot.ConvertELF('%s/bootloader.bin'%BUILD_DIR_BASE, elf)
+group = []#DefineGroup(name, src, depend = [''], CPPPATH = CPPPATH)
+
+Return('group')

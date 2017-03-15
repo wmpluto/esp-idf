@@ -1,0 +1,17 @@
+import os
+from building import *
+
+cwd = GetCurrentDir()
+name = os.path.split(cwd)[-1]
+
+src = Glob('libcoap/src/*.c') + Glob('libcoap/*.c') +Glob('port/*.c') 
+for src_f in src:
+    if 'coap_io_lwip.c' in src_f.path:
+        src.remove(src_f)
+        
+CPPPATH = [cwd+'/include',cwd+'/port/include',cwd+ '/port/include/coap', cwd+'/libcoap/include', cwd+'/libcoap/include/coap']
+CCFLAGS = ['-DWITH_POSIX']
+
+group = DefineGroup(name, src, depend = [''], CPPPATH = CPPPATH,CCFLAGS=CCFLAGS)
+
+Return('group')

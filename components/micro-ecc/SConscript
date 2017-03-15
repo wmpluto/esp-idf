@@ -1,0 +1,13 @@
+import os
+from building import *
+
+cwd = GetCurrentDir()
+name = os.path.split(cwd)[-1]
+
+src = Glob('micro-ecc/uECC.c')
+
+CPPPATH = [cwd+'/micro-ecc']
+
+group = DefineGroup(name, src, depend = [''], CPPPATH = CPPPATH)
+
+Return('group')

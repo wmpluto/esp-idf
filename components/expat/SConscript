@@ -1,0 +1,13 @@
+import os
+from building import *
+
+cwd = GetCurrentDir()
+name = os.path.split(cwd)[-1]
+
+src = Glob('port/*.c')+Glob('library/*.c')
+
+CPPPATH = [cwd+'/include',cwd+'/port/include',cwd+'/include/expat']
+LOCAL_CCFLAGS = ['-Wno-unused-function', '-DHAVE_EXPAT_CONFIG_H']
+group = DefineGroup(name, src, depend = [''], CPPPATH = CPPPATH, LOCAL_CCFLAGS = LOCAL_CCFLAGS)
+
+Return('group')

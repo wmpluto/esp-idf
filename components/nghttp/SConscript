@@ -1,0 +1,14 @@
+import os
+from building import *
+
+cwd = GetCurrentDir()
+name = os.path.split(cwd)[-1]
+
+src = Glob('port/*.c')+Glob('library/*.c')
+#src = []
+CPPPATH = [cwd+'/include', cwd+'/port/include']
+LOCAL_CCFLAGS = ['-Wno-error=address', '-Waddress', '-DHAVE_CONFIG_H']
+CCFLAGS=['-DHAVE_CONFIG_H']
+group = DefineGroup(name, src, depend = [''], CPPPATH = CPPPATH,CCFLAGS=CCFLAGS,LOCAL_CCFLAGS=LOCAL_CCFLAGS)
+
+Return('group')

@@ -1,0 +1,13 @@
+import os
+from building import *
+
+cwd = GetCurrentDir()
+name = os.path.split(cwd)[-1]
+
+src = Glob('port/*.c') + Glob('library/*.c')
+
+CPPPATH = [cwd+'/include', cwd+'/port/include', cwd+'/port/include/mbedtls']
+CCFLAGS = ['-DMBEDTLS_CONFIG_FILE=\'"mbedtls/esp_config.h"\'']
+group = DefineGroup(name, src, depend = [''], CPPPATH = CPPPATH,CCFLAGS=CCFLAGS)
+
+Return('group')

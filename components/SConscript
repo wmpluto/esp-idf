@@ -1,0 +1,13 @@
+from building import *
+Import('BUILD_DIR_BASE')
+libs = []
+
+cwd = cwd = GetCurrentDir()
+components = os.listdir(cwd)
+
+for component in components:
+    path = os.path.join(cwd, component)
+    if os.path.isfile(os.path.join(path, 'SConscript')):
+        libs += SConscript(os.path.join(path, 'SConscript'), variant_dir=BUILD_DIR_BASE+'/'+component, duplicate=0)
+
+Return('libs')

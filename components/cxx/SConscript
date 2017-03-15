@@ -1,0 +1,13 @@
+import os
+from building import *
+
+cwd = GetCurrentDir()
+name = os.path.split(cwd)[-1]
+
+src = Glob('*.cpp')
+
+CPPPATH = []
+LINKFLAGS = ' -u __cxa_guard_dummy'
+group = DefineGroup(name, src, depend = [''], CPPPATH = CPPPATH, LINKFLAGS=LINKFLAGS)
+
+Return('group')

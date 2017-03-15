@@ -1,0 +1,17 @@
+import os
+from building import *
+
+cwd = GetCurrentDir()
+name = os.path.split(cwd)[-1]
+
+src = Glob('api/*.c') +  Glob('apps/sntp/*.c') +  Glob('apps/ping/*.c') +  Glob('apps/*.c') +  Glob('core/ipv4/*.c') +  Glob('core/ipv6/*.c') +  Glob('core/*.c') +  Glob('netif/*.c') +  Glob('port/freertos/*.c') +  Glob('port/netif/*.c') +  Glob('port/*.c')
+
+CPPPATH = [cwd+'/include',
+			cwd + '/include/lwip',
+			cwd + '/include/lwip/port',
+			cwd + '/include/lwip/posix',
+			cwd + '/apps/ping']
+LOCAL_CCFLAGS = ['-Wno-address', '-Wno-unused-but-set-variable', '-Wno-unused-variable']
+group = DefineGroup(name, src, depend = [''], CPPPATH = CPPPATH, LOCAL_CCFLAGS= LOCAL_CCFLAGS)
+
+Return('group')

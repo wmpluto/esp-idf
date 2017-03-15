@@ -1,0 +1,14 @@
+import os
+from building import *
+
+cwd = GetCurrentDir()
+name = os.path.split(cwd)[-1]
+
+src = Glob('port/*.c') + Glob('src/crypto/*.c')
+
+CPPPATH = [cwd+'/include', cwd+'/port/include']
+LOCAL_CCFLAGS = ['-DEMBEDDED_SUPP', '-D__ets__', '-Wno-strict-aliasing']
+
+group = DefineGroup(name, src, depend = [''], CPPPATH = CPPPATH,LOCAL_CCFLAGS=LOCAL_CCFLAGS)
+
+Return('group')

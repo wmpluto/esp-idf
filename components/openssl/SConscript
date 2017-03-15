@@ -1,0 +1,13 @@
+import os
+from building import *
+
+cwd = GetCurrentDir()
+name = os.path.split(cwd)[-1]
+
+src = Glob('library/*.c')+Glob('platform/*.c')
+
+CPPPATH = [cwd+'/include']+[cwd+'/include/internal', cwd+'/include/platform', cwd+'/include/openssl']
+
+group = DefineGroup(name, src, depend = [''], CPPPATH = CPPPATH)
+
+Return('group')

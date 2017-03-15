@@ -1,0 +1,14 @@
+import os
+from building import *
+
+cwd = GetCurrentDir()
+name = os.path.split(cwd)[-1]
+
+src = Glob('*.c')
+
+CPPPATH = [cwd+'/include']
+
+group = DefineGroup(name, src, depend = [''], CPPPATH = CPPPATH)
+group =[]
+
+Return('group')

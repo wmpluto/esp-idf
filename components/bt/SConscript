@@ -1,0 +1,83 @@
+import os
+from building import *
+
+cwd = GetCurrentDir()
+name = os.path.split(cwd)[-1]
+
+if not GetDepend('CONFIG_BT_ENABLED'):
+	group = []
+	Return('group')
+
+CPPPATH = '''
+	bluedroid/bta/include			\
+				bluedroid/bta/sys/include		\
+				bluedroid/btcore/include		\
+				bluedroid/device/include		\
+				bluedroid/gki/include			\
+				bluedroid/hci/include			\
+				bluedroid/osi/include			\
+				bluedroid/btc/core/include		\
+				bluedroid/btc/profile/esp/blufi/include		\
+				bluedroid/btc/profile/esp/include		\
+				bluedroid/btc/profile/std/gatt/include	\
+				bluedroid/btc/profile/std/gap/include	\
+				bluedroid/btc/profile/std/sdp/include	\
+				bluedroid/btc/profile/std/include	\
+				bluedroid/btc/include		\
+				bluedroid/stack/btm/include		\
+				bluedroid/stack/btu/include		\
+				bluedroid/stack/gap/include		\
+				bluedroid/stack/gatt/include		\
+				bluedroid/stack/hcic/include		\
+				bluedroid/stack/l2cap/include		\
+				bluedroid/stack/sdp/include		\
+				bluedroid/stack/smp/include		\
+				bluedroid/stack/include			\
+				bluedroid/api/include		\
+				bluedroid/include			\
+				include	
+	'''
+CPPPATH = ['%s/%s' % (cwd, path) for path in CPPPATH.split()]
+LIBS = ['btdm_app']
+LIBPATH = [cwd+'/lib']
+
+src_dir = '''
+	bluedroid/bta/dm			\
+			bluedroid/bta/gatt			\
+			bluedroid/bta/hh			\
+			bluedroid/bta/sdp			\
+			bluedroid/bta/sys			\
+			bluedroid/bta				\
+			bluedroid/btcore			\
+			bluedroid/btif				\
+			bluedroid/device			\
+			bluedroid/gki				\
+			bluedroid/hci				\
+			bluedroid/main				\
+			bluedroid/osi				\
+			bluedroid/btc/core		\
+			bluedroid/btc/profile/esp/blufi	\
+			bluedroid/btc/profile/std/gap		\
+			bluedroid/btc/profile/std/gatt		\
+			bluedroid/btc/profile			\
+			bluedroid/stack/btm			\
+			bluedroid/stack/btu			\
+			bluedroid/stack/gap			\
+			bluedroid/stack/gatt			\
+			bluedroid/stack/hcic			\
+			bluedroid/stack/include			\
+			bluedroid/stack/l2cap			\
+			bluedroid/stack/sdp			\
+			bluedroid/stack/smp			\
+			bluedroid/stack				\
+			bluedroid/api			\
+			bluedroid				\
+			.
+	'''
+
+src = Glob('*.c')
+for dir in src_dir:
+	src += Glob('%s/*.c' % dir)
+
+group = DefineGroup(name, src, depend = [''], CPPPATH = CPPPATH, LIBS =LIBS, LIBPATH =LIBPATH)
+Return('group')

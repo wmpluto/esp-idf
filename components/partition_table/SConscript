@@ -1,0 +1,14 @@
+import os
+from building import *
+Import('env')
+Import('IDF_PATH')
+Import('BUILD_DIR_BASE')
+
+cwd = GetCurrentDir()
+name = os.path.split(cwd)[-1]
+
+  
+cmd = 'python %s/components/partition_table/gen_esp32part.py -q $SOURCE $TARGET' % IDF_PATH
+env.Command('%s/partitions_singleapp.bin'%BUILD_DIR_BASE,'partitions_singleapp.csv',cmd)
+group = []
+Return('group')

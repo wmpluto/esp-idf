@@ -1,0 +1,20 @@
+import os
+from building import *
+
+cwd = GetCurrentDir()
+name = os.path.split(cwd)[-1]
+
+src = Glob('*.c')
+
+CPPPATH = [cwd+'/include', cwd +'/platform_include']
+LIBS = ['m']
+LIBPATH = [cwd+'/lib',cwd]
+
+if GetDepend('CONFIG_NEWLIB_NANO_FORMAT'):
+	LIBS += ['libc_nano.a']
+else:
+	LIBS += ['libc.a']
+
+group = DefineGroup(name, src, depend = [''], CPPPATH = CPPPATH, LIBS=LIBS,LIBPATH=LIBPATH)
+
+Return('group')

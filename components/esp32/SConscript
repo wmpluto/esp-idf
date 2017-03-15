@@ -1,0 +1,30 @@
+import os
+from building import *
+
+cwd = GetCurrentDir()
+name = os.path.split(cwd)[-1]
+
+src = Glob('*.c') + Glob('hwcrypto/*.c')
+
+
+CPPPATH = [cwd, cwd+'/include']
+LINKFLAGS = ' -T %s' % 'esp32_out.ld'+\
+		' -T %s' % cwd+'/ld/esp32.common.ld'+\
+		' -T %s' % cwd+'/ld/esp32.rom.ld'+\
+		' -T %s' % cwd+'/ld/esp32.peripherals.ld'
+
+#env_priv = env.Clone()
+#env_priv.Replace(CFLAGS = ' -C -P -x c -E')
+#env_priv.Program('esp32_out.ld', IDF_PATH+'/components/ld/esp32.ld')
+
+#group = DefineGroup(name, src, depend = [''], CPPPATH = CPPPATH, LINKFLAGS = LINKFLAGS)
+LIBS = ['core', 'rtc', 'rtc_clk','hal']
+if GetDepend('CONFIG_PHY_ENABLED'):
+	LIBS += ['phy', 'coexist']
+if GetDepend('CONFIG_WIFI_ENABLED'):
+	LIBS += ['net80211', 'pp', 'wpa', 'smartconfig', 'coexist', 'wps', 'wpa2']
+
+LIBPATH = [cwd+'/lib',cwd]
+group = DefineGroup(name, src, depend = [''], CPPPATH = CPPPATH,LINKFLAGS=LINKFLAGS, LIBS =LIBS, LIBPATH =LIBPATH)
+
+Return('group')

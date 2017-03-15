@@ -1,0 +1,13 @@
+import os
+from building import *
+
+cwd = GetCurrentDir()
+name = os.path.split(cwd)[-1]
+
+src = Glob('*.[cS]')
+
+CPPPATH = [cwd+'/include',cwd+'/include/freertos',cwd+'/include/rtthread']
+LINKFLAGS = ' -Wl,--undefined=uxTopUsedPriority'
+group = DefineGroup(name, src, depend = [''], CPPPATH = CPPPATH, LINKFLAGS=LINKFLAGS)
+
+Return('group')

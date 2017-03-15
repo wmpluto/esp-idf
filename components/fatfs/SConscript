@@ -1,0 +1,11 @@
+import os
+from building import *
+
+cwd = GetCurrentDir()
+name = os.path.split(cwd)[-1]
+
+src = Glob('src/*.c') + Glob('src/option/*.c')
+CPPPATH = [cwd+'/src']
+group = DefineGroup(name, src, depend = [''],CPPPATH=CPPPATH)
+
+Return('group')
