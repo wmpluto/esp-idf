@@ -8,6 +8,9 @@ src = Glob('libcoap/src/*.c') + Glob('libcoap/*.c') +Glob('port/*.c')
 for src_f in src:
     if 'coap_io_lwip.c' in src_f.path:
         src.remove(src_f)
+for src_f in src:
+    if 'coap_io.c' in src_f.path:
+        src.remove(src_f)
         
 CPPPATH = [cwd+'/include',cwd+'/port/include',cwd+ '/port/include/coap', cwd+'/libcoap/include', cwd+'/libcoap/include/coap']
 CCFLAGS = ['-DWITH_POSIX']

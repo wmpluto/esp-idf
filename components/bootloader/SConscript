@@ -14,6 +14,26 @@ src = Glob('*.c')
 
 env_boot = Env.Clone()
 
+COMMON_WARNING_FLAGS  = ' -Wall -Werror=all'
+COMMON_WARNING_FLAGS += ' -Wno-error=unused-function'
+COMMON_WARNING_FLAGS += ' -Wno-error=unused-but-set-variable'
+COMMON_WARNING_FLAGS += ' -Wno-error=unused-variable'
+COMMON_WARNING_FLAGS += ' -Wno-error=deprecated-declarations'
+COMMON_WARNING_FLAGS += ' -Wextra'
+COMMON_WARNING_FLAGS += ' -Wno-unused-parameter -Wno-sign-compare'
+
+COMMON_FLAGS  = ' -ffunction-sections -fdata-sections'
+COMMON_FLAGS += ' -fstrict-volatile-bitfields'
+COMMON_FLAGS += ' -mlongcalls'
+COMMON_FLAGS += ' -nostdlib'
+
+OPTIMIZATION_FLAGS = ' -Og -ggdb'
+
+CFLAGS  = ' -std=gnu99'
+CFLAGS += OPTIMIZATION_FLAGS
+CFLAGS += COMMON_FLAGS
+CFLAGS += COMMON_WARNING_FLAGS + ' -Wno-old-style-declaration'
+
 CPPFLAGS  = ' -DWITH_POSIX -DHAVE_CONFIG_H'
 CPPFLAGS += ' -D BOOTLOADER_BUILD=1 -D IS_BOOTLOADER_BUILD=1'
 CPPFLAGS += ' -DESP_PLATFORM -D IDF_VER=\\"%s\\"' % IDF_VER
@@ -50,7 +70,7 @@ LIBPATH = [IDF_PATH + '/components/esp32/lib']
 
 LINKCOM = '$LINK -o $TARGET $LINKFLAGS $__RPATH  $SOURCES $_LIBDIRFLAGS $_LIBFLAGS -Wl,--end-group -Wl,-EL -Wl,-Map=build/bootloader.map'
 elf = env_boot.Program(BUILD_DIR_BASE + '/bootloader.elf', src, 
-			CFLAGS=CPPFLAGS,CPPPATH=CPPPATH,LINKFLAGS = LDFLAGS, LINKCOM = LINKCOM,LIBS=LIBS,LIBPATH=LIBPATH)
+			CFLAGS=CFLAGS,CPPFLAGS=CPPFLAGS,CPPPATH=CPPPATH,LINKFLAGS = LDFLAGS, LINKCOM = LINKCOM,LIBS=LIBS,LIBPATH=LIBPATH)
 env_boot.ConvertELF('%s/bootloader.bin'%BUILD_DIR_BASE, elf)
 group = []#DefineGroup(name, src, depend = [''], CPPPATH = CPPPATH)
 
