@@ -71,7 +71,8 @@ LIBPATH = [IDF_PATH + '/components/esp32/lib']
 LINKCOM = '$LINK -o $TARGET $LINKFLAGS $__RPATH  $SOURCES $_LIBDIRFLAGS $_LIBFLAGS -Wl,--end-group -Wl,-EL -Wl,-Map=build/bootloader.map'
 elf = env_boot.Program(BUILD_DIR_BASE + '/bootloader.elf', src, 
 			CFLAGS=CFLAGS,CPPFLAGS=CPPFLAGS,CPPPATH=CPPPATH,LINKFLAGS = LDFLAGS, LINKCOM = LINKCOM,LIBS=LIBS,LIBPATH=LIBPATH)
-env_boot.ConvertELF('%s/bootloader.bin'%BUILD_DIR_BASE, elf)
+bootbin = env_boot.ConvertELF('%s/bootloader.bin'%BUILD_DIR_BASE, elf)
+Export('bootbin')
 group = []#DefineGroup(name, src, depend = [''], CPPPATH = CPPPATH)
 
 Return('group')

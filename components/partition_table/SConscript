@@ -9,6 +9,7 @@ name = os.path.split(cwd)[-1]
 
   
 cmd = 'python %s/components/partition_table/gen_esp32part.py -q $SOURCE $TARGET' % IDF_PATH
-env.Command('%s/partitions_singleapp.bin'%BUILD_DIR_BASE,'partitions_singleapp.csv',cmd)
+partition = env.Command('%s/partitions_singleapp.bin'%BUILD_DIR_BASE,'partitions_singleapp.csv',cmd)
+Export('partition')
 group = []
 Return('group')
