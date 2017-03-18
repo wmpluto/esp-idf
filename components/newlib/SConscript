@@ -7,14 +7,19 @@ name = os.path.split(cwd)[-1]
 src = Glob('*.c')
 
 CPPPATH = [cwd+'/include', cwd +'/platform_include']
-LIBS = ['m']
 LIBPATH = [cwd+'/lib',cwd]
 
+# LIBS = ['m']
+# if GetDepend('CONFIG_NEWLIB_NANO_FORMAT'):
+# 	LIBS += ['libc_nano.a']
+# else:
+# 	LIBS += ['libc.a']
+LINKFLAGS = ' %s/lib/%s' % (cwd, 'libm.a')
 if GetDepend('CONFIG_NEWLIB_NANO_FORMAT'):
-	LIBS += ['libc_nano.a']
+	LINKFLAGS += ' %s/lib/%s' % (cwd, 'libc_nano.a')
 else:
-	LIBS += ['libc.a']
+	LINKFLAGS += ' %s/lib/%s' % (cwd, 'libc.a')
 
-group = DefineGroup(name, src, depend = [''], CPPPATH = CPPPATH, LIBS=LIBS,LIBPATH=LIBPATH)
+group = DefineGroup(name, src, depend = [''], CPPPATH = CPPPATH, LINKFLAGS=LINKFLAGS,LIBPATH=LIBPATH)
 
 Return('group')
